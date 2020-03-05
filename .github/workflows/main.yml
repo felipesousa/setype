@@ -1,0 +1,87 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - develop
+      - master
+  pull_request:
+    branches:
+      - develop
+      - master
+
+jobs:
+  tests:
+    name: Tests and Coverage Status
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Action Checkout
+      uses: actions/checkout@v1
+
+    - name: Use Node.js 10.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10.x
+
+    - name: Install Dependencies
+      run: npm i
+    
+    - name: Generate Coverage Output
+      run: npm run test
+
+    - name: Publishing update on Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  build:
+    name: Build and Publish NPM
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Action Checkout
+      uses: actions/checkout@v1
+
+    - name: Use Node.js 10.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 10.x
+
+    - name: Install Dependencies
+      run: npm install
+    
+    - name: Generate Build
+      run: npm run build
+
+    - name: Publish NPM Release
+      if: github.event_name == 'push' && github.ref == 'master'
+      uses: JS-DevTools/npm-publish@v1
+      with:
+        token: ${{ secrets.NPM_TOKEN }}
+
+  docs:
+    name: Publish Docs to Github Pages
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Action Checkout
+        uses: actions/checkout@v1
+
+      - name: Use Node.js 10.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Generating docs
+        run: npm run docs
+
+      - name: Publishing on Github Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          publish_dir: ./docs
