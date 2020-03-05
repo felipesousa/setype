@@ -2,6 +2,8 @@
 
 > a automated workflow to your next typescript project!
 
+[![Coverage Status](https://coveralls.io/repos/github/felipesousa/setype/badge.svg?branch=master)](https://coveralls.io/github/felipesousa/setype?branch=master) ![CI/CD](https://github.com/felipesousa/setype/workflows/CI/CD/badge.svg?branch=master)
+
 _Note: You can check the [current version here.](https://github.com/felipesousa/setype/)_
 
 ## Roadmap and Board

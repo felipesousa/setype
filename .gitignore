@@ -80,6 +80,10 @@ typings/
 # nuxt.js build output
 .nuxt
 
+# github actions
+gh-pages
+*.pub
+
 # rollup.js default build output
 dist/
 
